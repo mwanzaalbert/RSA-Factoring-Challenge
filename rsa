@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Pollard's rho algorithm for factorization
+pollard_rho() {
+    local n=$1
+    local x=2
+    local y=2
+    local d=1
+
+    while ((d == 1)); do
+        x=$(( (x * x + 1) % n ))
+        y=$(( (y * y + 1) % n ))
+        y=$(( (y * y + 1) % n ))
+        d=$(gcd $((x - y)) $n)
+    done
+
+    echo "$d"
+}
+
+# Euclidean algorithm to calculate the greatest common divisor (GCD)
+gcd() {
+    local a=$1
+    local b=$2
+    while ((b != 0)); do
+        local temp=$b
+        b=$((a % b))
+        a=$temp
+    done
+    echo "$a"
+}
+
+# Read number from file and factorize
+factorize_number() {
+    local file=$1
+    read -r num < "$file"
+    factor=$(pollard_rho "$num")
+    echo "$num=$factor*$((num / factor))"
+}
+
+# Run the factorization
+factorize_number "$1"
