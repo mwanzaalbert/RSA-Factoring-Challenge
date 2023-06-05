@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Check if a number is prime
+is_prime() {
+    local num=$1
+    local i=2
+    while (( i * i <= num )); do
+        if (( num % i == 0 )); then
+            return 1
+        fi
+        ((i++))
+    done
+    return 0
+}
+
+# Read numbers from file and factorize
+factorize_numbers() {
+    local file=$1
+    while read -r num; do
+        for ((i = 2; i <= num / 2; i++)); do
+            if ((num % i == 0)); then
+                is_prime "$i"
+                if [[ $? -eq 0 ]]; then
+                    echo "$num=$i*$((num / i))"
+                fi
+            fi
+        done
+    done < "$file"
+}
+
+# Run the factorization
+factorize_numbers "$1"
